@@ -1,0 +1,13 @@
+lifesmart:
+  appkey: ""
+  apptoken: ""
+  usertoken: ""
+  userid: ""
+  exclude:
+    - "xxx" #fill any value to omit
+  exclude_agt:
+    - "XXXX" #exlucde all devices in these smart stations
+  ai_include_agt:
+    - "XXXXXXXXX" # agt to be included for AI or Scene as a switch, fill any value to omit
+  ai_include_me:
+    - "xxxx" # me to be included for AI or Scene as a switch, fill any value to omit

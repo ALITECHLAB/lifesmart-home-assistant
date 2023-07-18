@@ -1,0 +1,11 @@
+{
+  "domain": "lifesmart",
+  "name": "Lifesmart",
+  "documentation": "https://github.com/skyzhishui/custom_components",
+  "requirements": [],
+  "dependencies": [],
+  "codeowners": [
+    "@skyzhishui"
+  ],
+  "version": "22.12.25"
+}
