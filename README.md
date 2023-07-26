@@ -31,3 +31,16 @@ lifesmart:
     - "xxxx" # me to be included for AI or Scene as a switch, fill any value to omit
   
 ```
+
+
+
+
+```
+me: "7725"
+agt: AzXCXXAgvaBEDSEU1Xwz__w
+ai: AI_IR_7725_1670533904
+category: custom
+brand: custom
+keys: "[\"CS_1\"]"
+  
+```
