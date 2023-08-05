@@ -1,4 +1,5 @@
 """lifesmart by @skyzhishui"""
+"""lifesmart update by @ALITECHLAB"""
 import subprocess
 from unittest import case
 import urllib.request

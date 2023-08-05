@@ -3,15 +3,15 @@ how to setup lifesmart-integration
 
 [![Watch the video](https://img.youtube.com/vi/s3JuIvKdzmE/maxresdefault.jpg)](https://youtu.be/s3JuIvKdzmE)
 
+## Watch the video https://www.youtube.com/watch?v=s3JuIvKdzmE
+
+
 ## System Info 
 
-    Home Assistant 2023.7.2
-
+    Home Assistant 2023.8.1
     Supervisor 2023.07.1
-
-    Operating System 10.3 
-
-    Frontend 20230705.1 - latest
+    Operating System 10.4
+    Frontend 20230802.0 - latest
 
 
 Added the following into configuration.yaml：

@@ -1,7 +1,7 @@
 {
   "domain": "lifesmart",
   "name": "Lifesmart",
-  "documentation": "https://github.com/skyzhishui/custom_components",
+  "documentation": "https://github.com/ALITECHLAB/lifesmart-home-assistant",
   "requirements": [],
   "dependencies": [],
   "codeowners": [

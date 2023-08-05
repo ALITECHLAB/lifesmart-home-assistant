@@ -1,4 +1,5 @@
 """lifesmart switch @skyzhishui"""
+"""lifesmart switch update by @ALITECHLAB"""
 import subprocess
 import urllib.request
 import json
