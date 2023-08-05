@@ -1,6 +1,7 @@
 # lifesmart-home-assistant
 how to setup lifesmart-integration
 
+[![Watch the video](https://img.youtube.com/vi/s3JuIvKdzmE/maxresdefault.jpg)](https://youtu.be/s3JuIvKdzmE)
 
 ## System Info 
 
