@@ -1,0 +1,1456 @@
+{
+	"info": {
+		"_postman_id": "e8dcaaf4-381c-48a4-846b-188803c5b3ee",
+		"name": "LifeSmart OpenAPI",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10602814",
+		"_collection_link": "https://www.postman.com/cloudy-moon-655075/workspace/lifesmart/collection/10602814-e8dcaaf4-381c-48a4-846b-188803c5b3ee?action=share&creator=10602814&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "login authorization",
+			"item": [
+				{
+					"name": "Get login authorization link",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"//get timestamp",
+									"var time = getTime();",
+									"pm.globals.set(\"time\", time);",
+									"",
+									"function getTime() {",
+									"    var tmp = Date.parse(new Date()).toString();",
+									"    tmp = tmp.substr(0, 10);",
+									"    return tmp;",
+									"}",
+									"",
+									"//Get request body parameters",
+									"var url = pm.request.url.query.get('auth_callback')",
+									"",
+									"//set signature",
+									"var sign = getSign(getValue(\"appkey\"), url, getValue(\"did\"), time, getValue(\"apptoken\"));",
+									"pm.globals.set(\"sign\", sign);",
+									"",
+									"//Get values from environment variables or global variables",
+									"function getValue(key) {",
+									"    var environmentValue = pm.environment.get(key);",
+									"    if (environmentValue) {",
+									"        return environmentValue;",
+									"    }",
+									"    var globalValue = pm.globals.get(key);",
+									"    if (globalValue) {",
+									"        return globalValue;",
+									"    }",
+									"    return null;",
+									"}",
+									"",
+									"//signature function",
+									"function getSign(appkey, auth_callback, did, time, apptoken) {",
+									"    var signStr = \"appkey=\" + appkey + \"&auth_callback=\" + auth_callback;",
+									"    if (did){",
+									"        signStr += \"&did=\" + did;",
+									"    }",
+									"    signStr += \"&time=\" + time;",
+									"    signStr += \"&apptoken=\" + apptoken;",
+									"    //MD5",
+									"    return CryptoJS.MD5(signStr).toString();",
+									"}",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"console.log(request.url) ",
+									"pm.globals.set(\"loginUrl\", request.url);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://api.ilifesmart.com/app/auth.authorize?id=101&appkey={{appkey}}&time={{time}}&auth_callback=http://localhost:8080/CallBack.ashx&sign={{sign}}&lang={{lang}}",
+							"protocol": "https",
+							"host": [
+								"api",
+								"ilifesmart",
+								"com"
+							],
+							"path": [
+								"app",
+								"auth.authorize"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "101"
+								},
+								{
+									"key": "appkey",
+									"value": "{{appkey}}"
+								},
+								{
+									"key": "time",
+									"value": "{{time}}"
+								},
+								{
+									"key": "auth_callback",
+									"value": "http://localhost:8080/CallBack.ashx"
+								},
+								{
+									"key": "did",
+									"value": "{{did}}",
+									"disabled": true
+								},
+								{
+									"key": "sign",
+									"value": "{{sign}}"
+								},
+								{
+									"key": "lang",
+									"value": "{{lang}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "usertoke renew",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"//get timestamp",
+									"var time = getTime();",
+									"pm.globals.set(\"time\", time);",
+									"",
+									"//Get request body parameters",
+									"var reqData = JSON.parse(request.data);",
+									"",
+									"//set signature",
+									"var sign = getSign(getValue(\"appkey\"), getValue(\"did\"), getValue(\"userid\"), time, getValue(\"apptoken\"), getValue(\"usertoken\"));",
+									"pm.globals.set(\"sign\", sign);",
+									"",
+									"",
+									"//Get values from environment variables or global variables",
+									"function getValue(key) {",
+									"    var environmentValue = pm.environment.get(key);",
+									"    if (environmentValue) {",
+									"        return environmentValue;",
+									"    }",
+									"    var globalValue = pm.globals.get(key);",
+									"    if (globalValue) {",
+									"        return globalValue;",
+									"    }",
+									"    return null;",
+									"}",
+									"",
+									"//Get 10 digit timestamp",
+									"function getTime() {",
+									"    var tmp = Date.parse(new Date()).toString();",
+									"    tmp = tmp.substr(0, 10);",
+									"    return tmp;",
+									"}",
+									"",
+									"//signature function",
+									"function getSign(appkey, did, userid, time, apptoken, usertoken) {",
+									"    var signStr = \"appkey=\" + appkey;",
+									"    if (did){",
+									"        signStr += \"&did=\" + did;",
+									"    }",
+									"    signStr += \"&time=\" + time;",
+									"    signStr += \"&userid=\" + userid;",
+									"    signStr += \"&apptoken=\" + apptoken;",
+									"    signStr += \"&usertoken=\" + usertoken;",
+									"    //MD5",
+									"    return CryptoJS.MD5(signStr).toString();",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Save the key information in the response result to a global variable",
+									"var jsonData = JSON.parse(responseBody);",
+									"pm.environment.set(\"usertoken\", jsonData.usertoken);",
+									"pm.environment.set(\"userid\", jsonData.userid);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\" : \"101\",\n    \"appkey\" : \"{{appkey}}\",\n    \"time\" : \"{{time}}\",\n    \"userid\" : \"{{userid}}\",\n    \"sign\" : \"{{sign}}\"\n}"
+						},
+						"url": {
+							"raw": "{{svrurl}}/app/auth.refreshtoken",
+							"host": [
+								"{{svrurl}}"
+							],
+							"path": [
+								"app",
+								"auth.refreshtoken"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "basic interface",
+			"item": [
+				{
+					"name": "Add Wisdom Center",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\" : \"101\",\n\t\"method\" : \"EpAddAgt\",\n\t\"system\" : {\n\t\t\"ver\" : \"{{ver}}\",\n\t\t\"lang\" : \"{{lang}}\",\n\t\t\"sign\" : \"{{sign}}\",\n\t\t\"userid\" : \"{{userid}}\",\n\t\t\"appkey\" : \"{{appkey}}\",\n\t\t\"time\" : \"{{time}}\"\n\t},\n\t\"params\" : {\n\t\t\"sn\" : \"pleaseFill\",\n\t\t\"name\" : \"pleaseFill\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "{{svrurl}}/api.EpAddAgt",
+							"host": [
+								"{{svrurl}}"
+							],
+							"path": [
+								"api.EpAddAgt"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Wisdom Center",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\" : \"101\",\n\t\"method\" : \"EpDeleteAgt\",\n\t\"system\" : {\n\t\t\"ver\" : \"{{ver}}\",\n\t\t\"lang\" : \"{{lang}}\",\n\t\t\"sign\" : \"{{sign}}\",\n\t\t\"userid\" : \"{{userid}}\",\n\t\t\"appkey\" : \"{{appkey}}\",\n\t\t\"time\" : \"{{time}}\"\n\t},\n\t\"params\" : {\n\t\t\"agt\" : \"pleaseFill\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "{{svrurl}}/api.EpDeleteAgt",
+							"host": [
+								"{{svrurl}}"
+							],
+							"path": [
+								"api.EpDeleteAgt"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add device",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\" : \"101\",\n\t\"method\" : \"EpAdd\",\n\t\"system\" : {\n\t\t\"ver\" : \"{{ver}}\",\n\t\t\"lang\" : \"{{lang}}\",\n\t\t\"sign\" : \"{{sign}}\",\n\t\t\"userid\" : \"{{userid}}\",\n\t\t\"appkey\" : \"{{appkey}}\",\n\t\t\"time\" : \"{{time}}\"\n\t},\n\t\"params\" : {\n\t\t\"agt\" : \"pleaseFill\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "{{svrurl}}/api.EpAdd",
+							"host": [
+								"{{svrurl}}"
+							],
+							"path": [
+								"api.EpAdd"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete device",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\" : \"101\",\n\t\"method\" : \"EpRemove\",\n\t\"system\" : {\n\t\t\"ver\" : \"{{ver}}\",\n\t\t\"lang\" : \"{{lang}}\",\n\t\t\"sign\" : \"{{sign}}\",\n\t\t\"userid\" : \"{{userid}}\",\n\t\t\"appkey\" : \"{{appkey}}\",\n\t\t\"time\" : \"{{time}}\"\n\t},\n\t\"params\" : {\n\t\t\"agt\" : \"pleaseFill\",\n\t\t\"me\" : \"pleaseFill\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "{{svrurl}}/api.EpRemove",
+							"host": [
+								"{{svrurl}}"
+							],
+							"path": [
+								"api.EpRemove"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all Wisdom Hubs",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\" : \"101\",\n\t\"method\" : \"EpGetAllAgts\",\n\t\"system\" : {\n\t\t\"ver\" : \"{{ver}}\",\n\t\t\"lang\" : \"{{lang}}\",\n\t\t\"sign\" : \"{{sign}}\",\n\t\t\"userid\" : \"{{userid}}\",\n\t\t\"appkey\" : \"{{appkey}}\",\n\t\t\"time\" : \"{{time}}\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "{{svrurl}}/api.EpGetAllAgts",
+							"host": [
+								"{{svrurl}}"
+							],
+							"path": [
+								"api.EpGetAllAgts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all device information",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\" : \"101\",\n\t\"method\" : \"EpGetAll\",\n\t\"system\" : {\n\t\t\"ver\" : \"{{ver}}\",\n\t\t\"lang\" : \"{{lang}}\",\n\t\t\"sign\" : \"{{sign}}\",\n\t\t\"userid\" : \"{{userid}}\",\n\t\t\"appkey\" : \"{{appkey}}\",\n\t\t\"time\" : \"{{time}}\"\n\t},\n\t\"params\" : {\n\t\t\"degree\":\"0\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "{{svrurl}}/api.EpGetAll",
+							"host": [
+								"{{svrurl}}"
+							],
+							"path": [
+								"api.EpGetAll"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get specified device information",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\" : \"101\",\n\t\"method\" : \"EpGet\",\n\t\"system\" : {\n\t\t\"ver\" : \"{{ver}}\",\n\t\t\"lang\" : \"{{lang}}\",\n\t\t\"sign\" : \"{{sign}}\",\n\t\t\"userid\" : \"{{userid}}\",\n\t\t\"appkey\" : \"{{appkey}}\",\n\t\t\"time\" : \"{{time}}\"\n\t},\n\t\"params\" : {\n\t\t\"agt\":\"pleaseFill\",\n\t\t\"me\":\"pleaseFill\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "{{svrurl}}/api.EpGet",
+							"host": [
+								"{{svrurl}}"
+							],
+							"path": [
+								"api.EpGet"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "controlling device",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\" : \"101\",\n\t\"method\" : \"EpSet\",\n\t\"system\" : {\n\t\t\"ver\" : \"{{ver}}\",\n\t\t\"lang\" : \"{{lang}}\",\n\t\t\"sign\" : \"{{sign}}\",\n\t\t\"userid\" : \"{{userid}}\",\n\t\t\"appkey\" : \"{{appkey}}\",\n\t\t\"time\" : \"{{time}}\"\n\t},\n\t\"params\" : {\n\t\t\"agt\" : \"pleaseFill\",\n\t\t\"me\" : \"pleaseFill\",\n\t\t\"idx\" : \"pleaseFill\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "{{svrurl}}/api.EpSet",
+							"host": [
+								"{{svrurl}}"
+							],
+							"path": [
+								"api.EpSet"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get scene",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\" : \"101\",\n\t\"method\" : \"SceneGet\",\n\t\"system\" : {\n\t\t\"ver\" : \"{{ver}}\",\n\t\t\"lang\" : \"{{lang}}\",\n\t\t\"sign\" : \"{{sign}}\",\n\t\t\"userid\" : \"{{userid}}\",\n\t\t\"appkey\" : \"{{appkey}}\",\n\t\t\"time\" : \"{{time}}\"\n\t},\n\t\"params\" : {\n\t\t\"agt\" : \"AzMAAAgvaAEAAAU1Xwz__w\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "{{svrurl}}/api.SceneGet",
+							"host": [
+								"{{svrurl}}"
+							],
+							"path": [
+								"api.SceneGet"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "trigger scene",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\" : \"101\",\n\t\"method\" : \"SceneSet\",\n\t\"system\" : {\n\t\t\"ver\" : \"{{ver}}\",\n\t\t\"lang\" : \"{{lang}}\",\n\t\t\"sign\" : \"{{sign}}\",\n\t\t\"userid\" : \"{{userid}}\",\n\t\t\"appkey\" : \"{{appkey}}\",\n\t\t\"time\" : \"{{time}}\"\n\t},\n\t\"params\" : {\n\t\t\"agt\" : \"pleaseFill\",\n\t\t\"id\" : \"pleaseFill\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "{{svrurl}}/api.SceneSet",
+							"host": [
+								"{{svrurl}}"
+							],
+							"path": [
+								"api.SceneSet"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upgrade Smart Center",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\" : \"101\",\n\t\"method\" : \"EpUpgradeAgt\",\n\t\"system\" : {\n\t\t\"ver\" : \"{{ver}}\",\n\t\t\"lang\" : \"{{lang}}\",\n\t\t\"sign\" : \"{{sign}}\",\n\t\t\"userid\" : \"{{userid}}\",\n\t\t\"appkey\" : \"{{appkey}}\",\n\t\t\"time\" : \"{{time}}\"\n\t},\n\t\"params\" : {\n\t\t\"agt\" : \"pleaseFill\"\n\t\t}\n}"
+						},
+						"url": {
+							"raw": "{{svrurl}}/api.EpUpgradeAgt",
+							"host": [
+								"{{svrurl}}"
+							],
+							"path": [
+								"api.EpUpgradeAgt"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Restart Wisdom Center",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\" : \"101\",\n\t\"method\" : \"EpRebootAgt\",\n\t\"system\" : {\n\t\t\"ver\" : \"{{ver}}\",\n\t\t\"lang\" : \"{{lang}}\",\n\t\t\"sign\" : \"{{sign}}\",\n\t\t\"userid\" : \"{{userid}}\",\n\t\t\"appkey\" : \"{{appkey}}\",\n\t\t\"time\" : \"{{time}}\"\n\t},\n\t\"params\" : {\n\t\t\"agt\" : \"pleaseFill\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "{{svrurl}}/api.EpRebootAgt",
+							"host": [
+								"{{svrurl}}"
+							],
+							"path": [
+								"api.EpRebootAgt"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get the latest version of Wisdom Center",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\" : \"101\",\n\t\"method\" : \"EpGetAgtLatestVersion\",\n\t\"system\" : {\n\t\t\"ver\" : \"{{ver}}\",\n\t\t\"lang\" : \"{{lang}}\",\n\t\t\"sign\" : \"{{sign}}\",\n\t\t\"userid\" : \"{{userid}}\",\n\t\t\"appkey\" : \"{{appkey}}\",\n\t\t\"time\" : \"{{time}}\"\n\t},\n\t\"params\" : {\n\t\t\"agt\" : \"pleaseFill\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "{{svrurl}}/api.EpGetAgtLatestVersion",
+							"host": [
+								"{{svrurl}}"
+							],
+							"path": [
+								"api.EpGetAgtLatestVersion"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtain the nearby devices searched by the smart center",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\" : \"101\",\n\t\"method\" : \"EpSearchSmart\",\n\t\"system\" : {\n\t\t\"ver\" : \"{{ver}}\",\n\t\t\"lang\" : \"{{lang}}\",\n\t\t\"sign\" : \"{{sign}}\",\n\t\t\"userid\" : \"{{userid}}\",\n\t\t\"appkey\" : \"{{appkey}}\",\n\t\t\"time\" : \"{{time}}\"\n\t},\n\t\"params\" : {\n\t\t\"agt\" : \"pleaseFill\",\n\t\t\"mode\" : \"pleaseFill\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "{{svrurl}}/api.EpSearchSmart",
+							"host": [
+								"{{svrurl}}"
+							],
+							"path": [
+								"api.EpSearchSmart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add the searched devices to the Wisdom Center",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\" : \"101\",\n\t\"method\" : \"EpAddSmart\",\n\t\"system\" : {\n\t\t\"ver\" : \"{{ver}}\",\n\t\t\"lang\" : \"{{lang}}\",\n\t\t\"sign\" : \"{{sign}}\",\n\t\t\"userid\" : \"{{userid}}\",\n\t\t\"appkey\" : \"{{appkey}}\",\n\t\t\"time\" : \"{{time}}\"\n\t},\n\t\"params\" : {\n\t\t\"agt\" : \"pleaseFill\",\n\t\t\"lsid\" : \"pleaseFill\",\n\t\t\"ip\" : \"pleaseFill\",\n\t\t\"name\" : \"pleaseFill\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "{{svrurl}}/api.EpAddSmart",
+							"host": [
+								"{{svrurl}}"
+							],
+							"path": [
+								"api.EpAddSmart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get smart device status",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\" : \"101\",\n\t\"method\" : \"EpGetAgtState\",\n\t\"system\" : {\n\t\t\"ver\" : \"{{ver}}\",\n\t\t\"lang\" : \"{{lang}}\",\n\t\t\"sign\" : \"{{sign}}\",\n\t\t\"userid\" : \"{{userid}}\",\n\t\t\"appkey\" : \"{{appkey}}\",\n\t\t\"time\" : \"{{time}}\"\n\t},\n\t\"params\" : {\n\t\t\"agt\" : \"pleaseFill\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "{{svrurl}}/api.EpGetAgtState",
+							"host": [
+								"{{svrurl}}"
+							],
+							"path": [
+								"api.EpGetAgtState"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Controlling Devices (Advanced Commands)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\" : \"101\",\n\t\"method\" : \"EpCmd\",\n\t\"system\" : {\n\t\t\"ver\" : \"{{ver}}\",\n\t\t\"lang\" : \"{{lang}}\",\n\t\t\"sign\" : \"{{sign}}\",\n\t\t\"userid\" : \"{{userid}}\",\n\t\t\"appkey\" : \"{{appkey}}\",\n\t\t\"time\" : \"{{time}}\"\n\t},\n\t\"params\" : {\n\t\t\"agt\" : \"pleaseFill\",\n\t\t\"me\" : \"pleaseFill\",\n        \"cmd\" : \"pleaseFill\",\n\t\t\"cmdargs\" : \"pleaseFill\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "{{svrurl}}/api.EpCmd",
+							"host": [
+								"{{svrurl}}"
+							],
+							"path": [
+								"api.EpCmd"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Control devices (low-level commands)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\" : \"101\",\n\t\"method\" : \"EpSetVar\",\n\t\"system\" : {\n\t\t\"ver\" : \"{{ver}}\",\n\t\t\"lang\" : \"{{lang}}\",\n\t\t\"sign\" : \"{{sign}}\",\n\t\t\"userid\" : \"{{userid}}\",\n\t\t\"appkey\" : \"{{appkey}}\",\n\t\t\"time\" : \"{{time}}\"\n\t},\n\t\"params\" : {\n\t\t\"agt\" : \"pleaseFill\",\n\t\t\"me\" : \"pleaseFill\",\n\t\t\"idx\" : \"pleaseFill\",\n\t\t\"cmd\" : \"pleaseFill\",\n\t\t\"cmddata\" : \"pleaseFill\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "{{svrurl}}/api.EpSetVar",
+							"host": [
+								"{{svrurl}}"
+							],
+							"path": [
+								"api.EpSetVar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get device extended attributes",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\" : \"101\",\n\t\"method\" : \"EpGetAttrs\",\n\t\"system\" : {\n\t\t\"ver\" : \"{{ver}}\",\n\t\t\"lang\" : \"{{lang}}\",\n\t\t\"sign\" : \"{{sign}}\",\n\t\t\"userid\" : \"{{userid}}\",\n\t\t\"appkey\" : \"{{appkey}}\",\n\t\t\"time\" : \"{{time}}\"\n\t},\n\t\"params\" : {\n\t\t\"agt\" : \"pleaseFill\",\n\t\t\"me\" : \"pleaseFill\",\n\t\t\"attrNames\" : \"pleaseFill\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "{{svrurl}}/api.EpGetAttrs",
+							"host": [
+								"{{svrurl}}"
+							],
+							"path": [
+								"api.EpGetAttrs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Test RF device signal strength",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\" : \"101\",\n\t\"method\" : \"EpTestRssi\",\n\t\"system\" : {\n\t\t\"ver\" : \"{{ver}}\",\n\t\t\"lang\" : \"{{lang}}\",\n\t\t\"sign\" : \"{{sign}}\",\n\t\t\"userid\" : \"{{userid}}\",\n\t\t\"appkey\" : \"{{appkey}}\",\n\t\t\"time\" : \"{{time}}\"\n\t},\n\t\"params\" : {\n\t\t\"agt\" : \"pleaseFill\",\n\t\t\"me\" : \"pleaseFill\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "{{svrurl}}/api.EpTestRssi",
+							"host": [
+								"{{svrurl}}"
+							],
+							"path": [
+								"api.EpTestRssi"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Quickly set multiple device properties in batches",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\" : \"101\",\n\t\"method\" : \"EpBatchSet\",\n\t\"system\" : {\n\t\t\"ver\" : \"{{ver}}\",\n\t\t\"lang\" : \"{{lang}}\",\n\t\t\"sign\" : \"{{sign}}\",\n\t\t\"userid\" : \"{{userid}}\",\n\t\t\"appkey\" : \"{{appkey}}\",\n\t\t\"time\" : \"{{time}}\"\n\t},\n\t\"params\" : {\n\t\t\"agt\" : \"pleaseFill\",\n\t\t\"ioItems\" : \"pleaseFill\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "{{svrurl}}/api.EpBatchSet",
+							"host": [
+								"{{svrurl}}"
+							],
+							"path": [
+								"api.EpBatchSet"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Obtain the nearby IP network devices searched by the smart center",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\" : \"101\",\n\t\"method\" : \"EpSearchIDev\",\n\t\"system\" : {\n\t\t\"ver\" : \"{{ver}}\",\n\t\t\"lang\" : \"{{lang}}\",\n\t\t\"sign\" : \"{{sign}}\",\n\t\t\"userid\" : \"{{userid}}\",\n\t\t\"appkey\" : \"{{appkey}}\",\n\t\t\"time\" : \"{{time}}\"\n\t},\n\t\"params\" : {\n\t\t\"agt\" : \"pleaseFill\",\n\t\t\"mode\" : \"pleaseFill\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "{{svrurl}}/api.EpSearchIDev",
+							"host": [
+								"{{svrurl}}"
+							],
+							"path": [
+								"api.EpSearchIDev"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add the found IP network devices to the Wisdom Center",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\" : \"101\",\n\t\"method\" : \"EpAddIDev\",\n\t\"system\" : {\n\t\t\"ver\" : \"{{ver}}\",\n\t\t\"lang\" : \"{{lang}}\",\n\t\t\"sign\" : \"{{sign}}\",\n\t\t\"userid\" : \"{{userid}}\",\n\t\t\"appkey\" : \"{{appkey}}\",\n\t\t\"time\" : \"{{time}}\"\n\t},\n\t\"params\" : {\n\t\t\"agt\" : \"pleaseFill\",\n\t\t\"uuid\" : \"pleaseFill\",\n\t\t\"devType\" : \"pleaseFill\",\n\t\t\"host\" : \"pleaseFill\",\n\t\t\"port\" : \"pleaseFill\",\n\t\t\"name\" : \"pleaseFill\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "{{svrurl}}/api.EpAddIDev",
+							"host": [
+								"{{svrurl}}"
+							],
+							"path": [
+								"api.EpAddIDev"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View or maintain the list of OTA files in Wisdom Center",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\" : \"101\",\n\t\"method\" : \"EpMaintOtaFiles\",\n\t\"system\" : {\n\t\t\"ver\" : \"{{ver}}\",\n\t\t\"lang\" : \"{{lang}}\",\n\t\t\"sign\" : \"{{sign}}\",\n\t\t\"userid\" : \"{{userid}}\",\n\t\t\"appkey\" : \"{{appkey}}\",\n\t\t\"time\" : \"{{time}}\"\n\t},\n\t\"params\" : {\n\t\t\"agt\" : \"pleaseFill\",\n\t\t\"act\" : \"pleaseFill\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "{{svrurl}}/api.EpMaintOtaFiles",
+							"host": [
+								"{{svrurl}}"
+							],
+							"path": [
+								"api.EpMaintOtaFiles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View or maintain the OTA task list of Wisdom Center",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\" : \"101\",\n\t\"method\" : \"EpMaintOtaTasks\",\n\t\"system\" : {\n\t\t\"ver\" : \"{{ver}}\",\n\t\t\"lang\" : \"{{lang}}\",\n\t\t\"sign\" : \"{{sign}}\",\n\t\t\"userid\" : \"{{userid}}\",\n\t\t\"appkey\" : \"{{appkey}}\",\n\t\t\"time\" : \"{{time}}\"\n\t},\n\t\"params\" : {\n\t\t\"agt\" : \"pleaseFill\",\n\t\t\"act\" : \"pleaseFill\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "{{svrurl}}/api.EpMaintOtaTasks",
+							"host": [
+								"{{svrurl}}"
+							],
+							"path": [
+								"api.EpMaintOtaTasks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Backup or restore the configuration on Wisdom Center",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\" : \"101\",\n\t\"method\" : \"EpMaintAgtRM\",\n\t\"system\" : {\n\t\t\"ver\" : \"{{ver}}\",\n\t\t\"lang\" : \"{{lang}}\",\n\t\t\"sign\" : \"{{sign}}\",\n\t\t\"userid\" : \"{{userid}}\",\n\t\t\"appkey\" : \"{{appkey}}\",\n\t\t\"time\" : \"{{time}}\"\n\t},\n\t\"params\" : {\n\t\t\"agt\" : \"pleaseFill\",\n\t\t\"act\" : \"pleaseFill\",\n\t\t\"actargs\" : \"pleaseFill\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "{{svrurl}}/api.EpMaintAgtRM",
+							"host": [
+								"{{svrurl}}"
+							],
+							"path": [
+								"api.EpMaintAgtRM"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Set Wisdom Center configuration",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id\" : \"101\",\n\t\"method\" : \"EpConfigAgt\",\n\t\"system\" : {\n\t\t\"ver\" : \"{{ver}}\",\n\t\t\"lang\" : \"{{lang}}\",\n\t\t\"sign\" : \"{{sign}}\",\n\t\t\"userid\" : \"{{userid}}\",\n\t\t\"appkey\" : \"{{appkey}}\",\n\t\t\"time\" : \"{{time}}\"\n\t},\n\t\"params\" : {\n\t\t\"agt\" : \"pleaseFill\",\n\t\t\"act\" : \"pleaseFill\",\n\t\t\"actargs\" : \"pleaseFill\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "{{svrurl}}/api.EpConfigAgt",
+							"host": [
+								"{{svrurl}}"
+							],
+							"path": [
+								"api.EpConfigAgt"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"//get timestamp",
+							"var time = getTime();",
+							"pm.globals.set(\"time\", time);",
+							"",
+							"//Get request body parameters",
+							"var reqData = JSON.parse(request.data);",
+							"",
+							"//set signature",
+							"var sign = getSign(reqData.method, reqData.params, time, getValue(\"appkey\"), getValue(\"apptoken\"), getValue(\"userid\"), getValue(\"usertoken\"), reqData.system.did);",
+							"pm.globals.set(\"sign\", sign);",
+							"",
+							"//Get values from environment variables or global variables",
+							"function getValue(key) {",
+							"    var environmentValue = pm.environment.get(key);",
+							"    if (environmentValue) {",
+							"        return environmentValue;",
+							"    }",
+							"    var globalValue = pm.globals.get(key);",
+							"    if (globalValue) {",
+							"        return globalValue;",
+							"    }",
+							"    return null;",
+							"}",
+							"",
+							"//Get 10 digit timestamp",
+							"function getTime() {",
+							"    var tmp = Date.parse(new Date()).toString();",
+							"    tmp = tmp.substr(0, 10);",
+							"    return tmp;",
+							"}",
+							"",
+							"//signature function",
+							"function getSign(method, params, time, appkey, apptoken, userid, usertoken, did) {",
+							"    //对params字段进行排序",
+							"    var paramKeyArr = new Array();",
+							"    if (params) {",
+							"        for (let key in params) {",
+							"            paramKeyArr.push(key);",
+							"        }",
+							"        paramKeyArr.sort();",
+							"    }",
+							"    var signStr = \"method:\" + method;",
+							"",
+							"    //Stitching params parameter",
+							"    if(paramKeyArr.length > 0){",
+							"        for (let i = 0; i < paramKeyArr.length; i++) {",
+							"            var k = paramKeyArr[i];",
+							"            var v = params[k];",
+							"            //When the params parameter is nested, it is converted to a json string.。",
+							"            if(typeof(v) != \"object\"){",
+							"                var vStr = v.toString();",
+							"                if(\"@\" != vStr.charAt(0)){",
+							"                    signStr += \",\" + k + \":\" + vStr;",
+							"                }",
+							"            }",
+							"        }",
+							"    }",
+							"    //Stitching system parameters",
+							"    if (did) {",
+							"        signStr += \",did:\" + did;",
+							"    }",
+							"    signStr += \",time:\" + time;",
+							"    if (userid) {",
+							"        signStr += \",userid:\" + userid;",
+							"    } else {",
+							"        signStr += \",userid:10001\";",
+							"    }",
+							"    if (usertoken) {",
+							"        signStr += \",usertoken:\" + usertoken;",
+							"    } else {",
+							"        signStr += \",usertoken:10001\";",
+							"    }",
+							"    signStr += \",appkey:\" + appkey;",
+							"    signStr += \",apptoken:\" + apptoken;",
+							"    //MD5",
+							"    return CryptoJS.MD5(signStr).toString();",
+							"}"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"// Interface Test Results",
+							"pm.test(\"接口正常\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"API CALL SUCCESS\", function () {",
+							"    var res = JSON.parse(responseBody);",
+							"    pm.expect(res.code).to.equal(0);",
+							"});"
+						]
+					}
+				}
+			]
+		}
+	]
+}
